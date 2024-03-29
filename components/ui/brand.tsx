@@ -10,17 +10,14 @@ interface BrandProps {
 
 export const Brand: FC<BrandProps> = ({ theme = "dark" }) => {
   return (
-    <Link
-      className="flex cursor-pointer flex-col items-center hover:opacity-50"
-      href="https://www.chatbotui.com"
-      target="_blank"
+    <div
+      className="flex cursor-pointer flex-col items-center "      
       rel="noopener noreferrer"
     >
-      <div className="mb-2">
-        <ChatbotUISVG theme={theme === "dark" ? "dark" : "light"} scale={0.3} />
+      <div className="text-4xl font-bold tracking-wide">Mindi AI</div>
+      <div className="text-center text-sm text-gray-600">
+        Your personal chatbot and note-taking assistant
       </div>
-
-      <div className="text-4xl font-bold tracking-wide">Chatbot UI</div>
-    </Link>
+    </div>
   )
 }

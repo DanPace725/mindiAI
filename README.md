@@ -14,7 +14,7 @@ Mindi is an AI-driven app that blends conversational interaction with sophistica
 - Over time, Mindi will dynamically summarize conversations and save the information to a graph database, allowing it to remember important details from past conversations. (Coming Soon)
 
 ## Getting Started
-Mindi is currently deployed on Vercel at [Link]
+Mindi is currently deployed on Vercel at [Link](https://mindi-ai.vercel.app/)
 For detailed information on running your own version see the indepth instructions for Chatbot UI [Here](https://github.com/mckaywrigley/chatbot-ui/blob/main/README.md)
 
 

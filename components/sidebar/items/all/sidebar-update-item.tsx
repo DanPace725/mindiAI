@@ -110,9 +110,9 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
     setPrompts,
     setFiles,
     setCollections,
-    //setAssistants,
-    //setTools,
-    //setModels,
+    setAssistants,
+    setTools,
+    setModels,
     setAssistantImages
   } = useContext(ChatbotUIContext)
 
@@ -576,10 +576,10 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
     presets: setPresets,
     prompts: setPrompts,
     files: setFiles,
-    collections: setCollections
-    //assistants: setAssistants,
-    //tools: setTools,
-    //models: setModels
+    collections: setCollections,
+    assistants: setAssistants,
+    tools: setTools,
+    models: setModels,
   }
 
   const handleUpdate = async () => {

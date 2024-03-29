@@ -53,10 +53,10 @@ export const SidebarCreateItem: FC<SidebarCreateItemProps> = ({
     setPrompts,
     setFiles,
     setCollections,
-    //setAssistants,
-    setAssistantImages
-    //setTools,
-    //setModels
+    setAssistants,
+    setAssistantImages,
+    setTools,
+    setModels
   } = useContext(ChatbotUIContext)
 
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -178,10 +178,10 @@ export const SidebarCreateItem: FC<SidebarCreateItemProps> = ({
     presets: setPresets,
     prompts: setPrompts,
     files: setFiles,
-    collections: setCollections
-    //assistants: setAssistants,
-    //tools: setTools,
-    //models: setModels
+    collections: setCollections,
+    assistants: setAssistants,
+    tools: setTools,
+    models: setModels
   }
 
   const handleCreate = async () => {

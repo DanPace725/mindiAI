@@ -16,6 +16,7 @@ const NotesComponent: React.FC = () => {
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [markdownContent, setMarkdownContent] = useState("")
+  const [saveSuccess, setSaveSuccess] = useState(false);
   const [userId, setUserId] = useState<string>("")
   const params = useParams()
   const workspaceId = params.workspaceid as string
@@ -52,10 +53,6 @@ const NotesComponent: React.FC = () => {
   }
 
   const handleSaveNotes = async () => {
-    if (!workspaceId) {
-      console.error("Workspace ID is not set. Cannot save notes.")
-      return
-    }
     try {
       await saveNotesAsMarkdown(
         title,
@@ -63,13 +60,15 @@ const NotesComponent: React.FC = () => {
         userId,
         workspaceId,
         "local" as "openai" | "local"
-      )
-      // Handle success (e.g., show a success message)
+      );
+      setSaveSuccess(true); // Update state to indicate save success
+      setTimeout(() => setSaveSuccess(false), 3000); // Reset the state after 3 seconds
     } catch (error) {
-      console.error("Failed to save notes:", error)
-      // Handle error (e.g., show an error message)
+      console.error("Failed to save notes:", error);
+      // Optionally, handle error notification here
     }
-  }
+  };
+  
 
   const handleMarkdownChange = (markdown: string) => {
     setMarkdownContent(markdown) // Update the markdownContent state with the new markdown
@@ -100,6 +99,9 @@ const NotesComponent: React.FC = () => {
         >
           Save
         </button>
+          {saveSuccess && (
+            <div className="alert alert-success mt-4">Notes saved successfully!</div>
+          )}
       </div>
     </div>
   )

@@ -31,7 +31,7 @@ export const QuickSettings: FC<QuickSettingsProps> = ({}) => {
 
   const {
     presets,
-    //assistants,
+    assistants,
     selectedAssistant,
     selectedPreset,
     chatSettings,
@@ -59,7 +59,7 @@ export const QuickSettings: FC<QuickSettingsProps> = ({}) => {
     }
   }, [isOpen])
 
-  /*const handleSelectQuickSetting = async (
+  const handleSelectQuickSetting = async (
     item: Tables<"presets"> | Tables<"assistants"> | null,
     contentType: "presets" | "assistants" | "remove"
   ) => {
@@ -130,7 +130,7 @@ export const QuickSettings: FC<QuickSettingsProps> = ({}) => {
       includeWorkspaceInstructions: item.include_workspace_instructions,
       embeddingsProvider: item.embeddings_provider as "openai" | "local"
     })
-  }*/
+  }
 
   const checkIfModified = () => {
     if (!chatSettings) return false

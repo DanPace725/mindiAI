@@ -133,12 +133,12 @@
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
+  height: 22px;
+  width: 22px;
   left: 4px;
   bottom: 4px;
   background-color: white;
-  transition: .4s;
+  transition: .3s;
   border-radius: 50%;
 }
 
@@ -147,7 +147,7 @@ input:checked + .slider {
 }
 
 input:checked + .slider:before {
-  transform: translateX(26px);
+  transform: translateX(30px);
 }
 
 /* Rounded sliders */
@@ -158,4 +158,11 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+.slider.active {
+  background-color: #4542dc; 
+}
+.slider.active:before {
+  transform: translateX(32px); /* Move the slider to the right for active state */
+}
+
 /* Dark mode color palette */

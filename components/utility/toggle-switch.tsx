@@ -1,32 +1,20 @@
-"use client"
-
 import { useState } from "react"
-import { FC } from "react"
+import { Toggle } from "../ui/toggle" // Adjust the path as necessary
 
-interface ToggleSwitchProps {
-  onToggle: (isToggled: boolean) => void
-}
-
-export const ToggleSwitch: FC<ToggleSwitchProps> = ({ onToggle }) => {
+export const ToggleSwitch = ({ onToggle }: { onToggle: (value: boolean) => void }) => {
   const [isToggled, setIsToggled] = useState(false)
 
   const handleToggle = () => {
-    setIsToggled(!isToggled)
-    onToggle(!isToggled)
+    const newState = !isToggled;
+    setIsToggled(newState);
+    onToggle(newState);
   }
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        top: "10px",
-        left: "50%",
-        transform: "translateX(-50%)"
-      }}
-    >
-      <label className="switch">
-        <input type="checkbox" onChange={handleToggle} />
-        <span className="slider round"></span>
+    <div className="flex items-center justify-center">
+      <label className="Toggle hover:bg-accent">
+        <Toggle pressed={isToggled} onPressedChange={handleToggle} />
+        <span className={`slider round ${isToggled ? 'active' : ''} hover:opacity-50`}></span>
       </label>
     </div>
   )

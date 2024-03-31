@@ -1,7 +1,9 @@
 import { ChatbotUIContext } from "@/context/context"
-import { IconCheck, IconCopy, IconEdit, IconRepeat } from "@tabler/icons-react"
+import { IconDeviceFloppy, IconCheck, IconCopy, IconEdit, IconRepeat } from "@tabler/icons-react"
 import { FC, useContext, useEffect, useState } from "react"
 import { WithTooltip } from "../ui/with-tooltip"
+
+
 
 export const MESSAGE_ICON_SIZE = 18
 
@@ -13,6 +15,7 @@ interface MessageActionsProps {
   onCopy: () => void
   onEdit: () => void
   onRegenerate: () => void
+  onSummarize: () => void
 }
 
 export const MessageActions: FC<MessageActionsProps> = ({
@@ -22,7 +25,8 @@ export const MessageActions: FC<MessageActionsProps> = ({
   isHovering,
   onCopy,
   onEdit,
-  onRegenerate
+  onRegenerate,
+  onSummarize,
 }) => {
   const { isGenerating } = useContext(ChatbotUIContext)
 
@@ -32,6 +36,9 @@ export const MessageActions: FC<MessageActionsProps> = ({
     onCopy()
     setShowCheckmark(true)
   }
+
+  
+
 
   const handleForkChat = async () => {}
 
@@ -96,6 +103,8 @@ export const MessageActions: FC<MessageActionsProps> = ({
         />
       )}
 
+      
+
       {isLast && (
         <WithTooltip
           delayDuration={1000}
@@ -110,6 +119,26 @@ export const MessageActions: FC<MessageActionsProps> = ({
           }
         />
       )}
+
+      {(isHovering || isLast) && (
+              <WithTooltip
+                delayDuration={1000}
+                side="bottom"
+                display={<div>Save Summary</div>}
+                trigger={
+                  showCheckmark ? (
+                    <IconCheck size={MESSAGE_ICON_SIZE} />
+                  ) : (
+                    <IconDeviceFloppy
+                      className="cursor-pointer hover:opacity-50"
+                      size={MESSAGE_ICON_SIZE}
+                      onClick={onSummarize}
+                      
+                    />
+                  )
+                }
+              />
+            )}
 
       {/* {1 > 0 && isAssistant && <MessageReplies />} */}
     </div>

@@ -63,6 +63,7 @@ export const Message: FC<MessageProps> = ({
   } = useContext(ChatbotUIContext)
 
   const { handleSendMessage } = useChatHandler()
+  const { handleSummarize } = useChatHandler()
 
   const editInputRef = useRef<HTMLTextAreaElement>(null)
 
@@ -78,6 +79,7 @@ export const Message: FC<MessageProps> = ({
 
   const [viewSources, setViewSources] = useState(false)
 
+
   const handleCopy = () => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(message.content)
@@ -91,7 +93,9 @@ export const Message: FC<MessageProps> = ({
       document.body.removeChild(textArea)
     }
   }
-
+  const handleStartEdit = () => {
+    onStartEdit(message)
+  }
   const handleSendEdit = () => {
     onSubmitEdit(editedMessage, message.sequence_number)
     onCancelEdit()
@@ -111,10 +115,14 @@ export const Message: FC<MessageProps> = ({
       true
     )
   }
-
-  const handleStartEdit = () => {
-    onStartEdit(message)
+  const handleSendSummary = async () => {
+    setIsGenerating(true);
+    await handleSummarize();
   }
+
+
+
+  
 
   useEffect(() => {
     setEditedMessage(message.content)
@@ -199,6 +207,7 @@ export const Message: FC<MessageProps> = ({
             isEditing={isEditing}
             isHovering={isHovering}
             onRegenerate={handleRegenerate}
+            onSummarize={handleSendSummary}
           />
         </div>
         <div className="space-y-3">

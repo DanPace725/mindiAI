@@ -19,7 +19,8 @@ import {
   handleLocalChat,
   handleRetrieval,
   processResponse,
-  validateChatSettings
+  validateChatSettings,
+  createSummary
 } from "../chat-helpers"
 
 export const useChatHandler = () => {
@@ -411,6 +412,62 @@ export const useChatHandler = () => {
     handleSendMessage(editedContent, filteredMessages, false)
   }
 
+  const handleSummarize = async () => {
+  setIsGenerating(true);
+
+  const modelData = [
+    ...models.map(model => ({
+      modelId: model.model_id as LLMID,
+      modelName: model.name,
+      provider: "custom" as ModelProvider,
+      hostedId: model.id,
+      platformLink: "",
+      imageInput: false
+    })),
+    ...LLM_LIST,
+    ...availableLocalModels,
+    ...availableOpenRouterModels
+  ].find(llm => llm.modelId === chatSettings?.model);
+
+  if (!modelData) {
+    console.error("Model not found");
+    setIsGenerating(false);
+    return;
+  }
+
+  const newAbortController = new AbortController();
+  setAbortController(newAbortController);
+
+  try {
+    const summary = await createSummary(
+      chatMessages[chatMessages.length - 1], // Pass the last chatMessage
+      {
+        chatSettings: chatSettings!,
+        workspaceInstructions: selectedWorkspace!.instructions || "",
+        chatMessages: chatMessages,
+        assistant: selectedChat?.assistant_id ? selectedAssistant : null,
+        messageFileItems: [], // You may need to pass the appropriate value here
+        chatFileItems: chatFileItems
+      },
+      profile!,
+      modelData,
+      newAbortController,
+      setIsGenerating,
+      setFirstTokenReceived,
+      setChatMessages,
+      setToolInUse
+    );
+
+    // Do something with the summary, e.g., update the chat messages
+    const updatedChatMessages = [...chatMessages, { message: { ...chatMessages[chatMessages.length - 1].message, content: summary }, fileItems: chatMessages[chatMessages.length - 1].fileItems }];
+    setChatMessages(updatedChatMessages);
+  } catch (error) {
+    console.error("Error summarizing conversation:", error);
+  } finally {
+    setIsGenerating(false);
+  }
+};
+
   return {
     chatInputRef,
     prompt,
@@ -418,6 +475,7 @@ export const useChatHandler = () => {
     handleSendMessage,
     handleFocusChatInput,
     handleStopMessage,
-    handleSendEdit
+    handleSendEdit,
+    handleSummarize
   }
 }

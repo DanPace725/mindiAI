@@ -415,6 +415,23 @@ export const useChatHandler = () => {
   const handleSummarize = async () => {
   setIsGenerating(true);
 
+  const emptyChatMessage: ChatMessage = {
+    message: {
+      chat_id: "",
+      assistant_id: null,
+      content: "",
+      created_at: "",
+      id: "",
+      image_paths: [],
+      model: "",
+      role: "",
+      sequence_number: 0,
+      updated_at: "",
+      user_id: ""
+    },
+    fileItems: []
+  }
+
   const modelData = [
     ...models.map(model => ({
       modelId: model.model_id as LLMID,
@@ -440,8 +457,8 @@ export const useChatHandler = () => {
 
   try {
     const summary = await createSummary(
-      chatMessages[chatMessages.length - 1], // Pass the last chatMessage
-      {
+        emptyChatMessage, // Pass the last chatMessage
+        {
         chatSettings: chatSettings!,
         workspaceInstructions: selectedWorkspace!.instructions || "",
         chatMessages: chatMessages,
@@ -457,16 +474,33 @@ export const useChatHandler = () => {
       setChatMessages,
       setToolInUse
     );
-
-    // Do something with the summary, e.g., update the chat messages
-    const updatedChatMessages = [...chatMessages, { message: { ...chatMessages[chatMessages.length - 1].message, content: summary }, fileItems: chatMessages[chatMessages.length - 1].fileItems }];
+     // Create a new temporary chat message using createTempMessages
+     const newSummaryMessage: ChatMessage = {
+      message: {
+        id: selectedChat?.user_id || "",
+        chat_id: selectedChat?.id || "",
+        assistant_id: selectedAssistant?.id || null,
+        user_id: profile?.id || "",
+        content: summary,
+        role: "assistant",
+        model: chatSettings?.model || "",
+        sequence_number: chatMessages.length > 0 ? chatMessages[chatMessages.length - 1].message.sequence_number + 1 : 1,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        image_paths: [],
+      },
+      fileItems: []
+     }
+     
+    // Add the new summary message to the list of chat messages
+    const updatedChatMessages = [...chatMessages, newSummaryMessage];
     setChatMessages(updatedChatMessages);
   } catch (error) {
     console.error("Error summarizing conversation:", error);
   } finally {
     setIsGenerating(false);
   }
-};
+  };
 
   return {
     chatInputRef,
@@ -477,5 +511,6 @@ export const useChatHandler = () => {
     handleStopMessage,
     handleSendEdit,
     handleSummarize
-  }
+  };
+  
 }

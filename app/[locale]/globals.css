@@ -164,5 +164,8 @@ input:checked + .slider:before {
 .slider.active:before {
   transform: translateX(32px); /* Move the slider to the right for active state */
 }
-
+.ProseMirror {
+  background-color: var(--background);
+  color: var(--text-color);
+}
 /* Dark mode color palette */

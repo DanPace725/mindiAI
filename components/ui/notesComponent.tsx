@@ -75,7 +75,7 @@ const NotesComponent: React.FC = () => {
   }
 
   return (
-    <div className="dark:bg-surface dark:text-foreground flex min-h-screen flex-col">
+    <div className="dark:bg-secondary dark:text-foreground flex min-h-screen flex-col">
       <div className="py-8"></div>
       <h1 className="mb-4 text-center text-2xl font-bold">Notes</h1>
       <div className="flex grow items-center justify-center px-2">
@@ -88,8 +88,10 @@ const NotesComponent: React.FC = () => {
               value={title}
               onChange={e => setTitle(e.target.value)}
             />
+          </div >
+          <div className="bg-secondary">
+          <Editor  onMarkdownChange={handleMarkdownChange} />
           </div>
-          <Editor onMarkdownChange={handleMarkdownChange} />
         </div>
       </div>
       <div className="flex justify-center py-2">

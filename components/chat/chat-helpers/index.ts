@@ -512,3 +512,54 @@ export const handleCreateMessages = async (
     setChatMessages(finalChatMessages)
   }
 }
+export const createSummary = async (
+  chatMessage: ChatMessage,
+  payload: ChatPayload,
+  profile: Tables<"profiles">,
+  modelData: LLM,
+  newAbortController: AbortController,
+  setIsGenerating: React.Dispatch<React.SetStateAction<boolean>>,
+  setFirstTokenReceived: React.Dispatch<React.SetStateAction<boolean>>,
+  setChatMessages: React.Dispatch<React.SetStateAction<ChatMessage[]>>,
+  setToolInUse: React.Dispatch<React.SetStateAction<string>>
+) => {
+  const provider =
+    modelData.provider === "openai" && profile.use_azure_openai
+      ? "azure"
+      : modelData.provider;
+
+  const formattedMessages = await buildFinalMessages(payload, profile, []);
+
+  const prompt = "Please summarize this conversation:";
+  const messages = [...formattedMessages, { role: "user", content: prompt }];
+
+  const apiEndpoint =
+    provider === "custom" ? "/api/chat/custom" : `/api/chat/${provider}`;
+
+  const requestBody = {
+    chatSettings: payload.chatSettings,
+    messages: messages,
+    customModelId: provider === "custom" ? modelData.hostedId : "",
+  };
+
+  const response = await fetchChatResponse(
+    apiEndpoint,
+    requestBody,
+    true,
+    newAbortController,
+    setIsGenerating,
+    setChatMessages
+  );
+
+  const summary = await processResponse(
+    response,
+    chatMessage,
+    true,
+    newAbortController,
+    setFirstTokenReceived,
+    setChatMessages,
+    setToolInUse
+  );
+
+  return summary;
+};

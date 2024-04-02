@@ -19,7 +19,8 @@ import {
   handleLocalChat,
   handleRetrieval,
   processResponse,
-  validateChatSettings
+  validateChatSettings,
+  createSummary
 } from "../chat-helpers"
 
 export const useChatHandler = () => {
@@ -411,6 +412,96 @@ export const useChatHandler = () => {
     handleSendMessage(editedContent, filteredMessages, false)
   }
 
+  const handleSummarize = async () => {
+  setIsGenerating(true);
+
+  const emptyChatMessage: ChatMessage = {
+    message: {
+      chat_id: "",
+      assistant_id: null,
+      content: "",
+      created_at: "",
+      id: "",
+      image_paths: [],
+      model: "",
+      role: "",
+      sequence_number: 0,
+      updated_at: "",
+      user_id: ""
+    },
+    fileItems: []
+  }
+
+  const modelData = [
+    ...models.map(model => ({
+      modelId: model.model_id as LLMID,
+      modelName: model.name,
+      provider: "custom" as ModelProvider,
+      hostedId: model.id,
+      platformLink: "",
+      imageInput: false
+    })),
+    ...LLM_LIST,
+    ...availableLocalModels,
+    ...availableOpenRouterModels
+  ].find(llm => llm.modelId === chatSettings?.model);
+
+  if (!modelData) {
+    console.error("Model not found");
+    setIsGenerating(false);
+    return;
+  }
+
+  const newAbortController = new AbortController();
+  setAbortController(newAbortController);
+
+  try {
+    const summary = await createSummary(
+        emptyChatMessage, // Pass the last chatMessage
+        {
+        chatSettings: chatSettings!,
+        workspaceInstructions: selectedWorkspace!.instructions || "",
+        chatMessages: chatMessages,
+        assistant: selectedChat?.assistant_id ? selectedAssistant : null,
+        messageFileItems: [], // You may need to pass the appropriate value here
+        chatFileItems: chatFileItems
+      },
+      profile!,
+      modelData,
+      newAbortController,
+      setIsGenerating,
+      setFirstTokenReceived,
+      setChatMessages,
+      setToolInUse
+    );
+     // Create a new temporary chat message using createTempMessages
+     const newSummaryMessage: ChatMessage = {
+      message: {
+        id: selectedChat?.user_id || "",
+        chat_id: selectedChat?.id || "",
+        assistant_id: selectedAssistant?.id || null,
+        user_id: profile?.id || "",
+        content: summary,
+        role: "assistant",
+        model: chatSettings?.model || "",
+        sequence_number: chatMessages.length > 0 ? chatMessages[chatMessages.length - 1].message.sequence_number + 1 : 1,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        image_paths: [],
+      },
+      fileItems: []
+     }
+     
+    // Add the new summary message to the list of chat messages
+    const updatedChatMessages = [...chatMessages, newSummaryMessage];
+    setChatMessages(updatedChatMessages);
+  } catch (error) {
+    console.error("Error summarizing conversation:", error);
+  } finally {
+    setIsGenerating(false);
+  }
+  };
+
   return {
     chatInputRef,
     prompt,
@@ -418,6 +509,8 @@ export const useChatHandler = () => {
     handleSendMessage,
     handleFocusChatInput,
     handleStopMessage,
-    handleSendEdit
-  }
+    handleSendEdit,
+    handleSummarize
+  };
+  
 }

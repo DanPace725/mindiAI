@@ -2,7 +2,7 @@
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react"
 import "@blocknote/core/fonts/inter.css"
 import "@blocknote/react/style.css"
-import { useEffect } from "react"
+
 
 // Define an interface for the props of the Editor component
 interface EditorProps {

@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import { supabase } from "@/lib/supabase/browser-client"
 import { getProfileByUserId } from "@/db/profile"
 import { saveNotesAsMarkdown } from "@/db/files"
@@ -24,6 +24,8 @@ const NotesComponent: React.FC = () => {
   const params = useParams()
   const workspaceId = params.workspaceid as string
   const [embeddingsProvider, setEmbeddingsProvider] = useState<string>("")
+  const { files, setFiles } = useContext(ChatbotUIContext);
+
 
   // Debounce function to save notes after 2 seconds of inactivity
   const saveNotes = debounce(async () => {
@@ -75,15 +77,17 @@ const NotesComponent: React.FC = () => {
   }
 
   const handleSaveNotes = async () => {
+    
     try {
-      await saveNotesAsMarkdown(
+      const savedFile = await saveNotesAsMarkdown(
         title,
         markdownContent,
         userId,
         workspaceId,
         "local" as "openai" | "local"
       );
-      setSaveSuccess(true); // Update state to indicate save success
+      setFiles([...files, savedFile]);
+      setSaveSuccess(true); // Update state to indicate save success    
       setTimeout(() => setSaveSuccess(false), 3000); // Reset the state after 3 seconds
     } catch (error) {
       console.error("Failed to save notes:", error);
@@ -113,22 +117,23 @@ const NotesComponent: React.FC = () => {
           </div >
           <div className="bg-secondary">
           <Editor onMarkdownChange={handleMarkdownChange} />
+          <div className="flex justify-center py-2">
+            <button
+              className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground rounded px-4 py-2 font-bold"
+              onClick={handleSaveNotes}
+              >
+              Save
+            </button>
+              {saveSuccess && (
+              <div className="alert alert-success text-foreground bg-accent absolute bottom-0 right-0 m-4 flex justify-center font-bold">Saved</div>
+              )}
+          </div>
+          </div>
           </div>
         </div>
       </div>
-      <div className="flex justify-center py-2">
-        <button
-          className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground rounded px-4 py-2 font-bold"
-          onClick={handleSaveNotes}
-        >
-          Save
-        </button>
-          {saveSuccess && (
-            <div className="alert alert-success mt-4">Notes saved successfully!</div>
-          )}
-      </div>
-    </div>
-  )
+      
+  ) 
 }
 
 export default NotesComponent

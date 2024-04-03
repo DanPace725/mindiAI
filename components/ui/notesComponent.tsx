@@ -9,8 +9,9 @@ import { getPresetWorkspacesByWorkspaceId } from "@/db/presets"
 import { getPromptWorkspacesByWorkspaceId } from "@/db/prompts"
 import { ChatbotUIContext } from "@/context/context"
 import { useParams } from "next/navigation"
+import { debounce } from "lodash"
 
-const Editor = dynamic(() => import("./editor"), { ssr: false })
+const Editor = dynamic(() => import("../utility/editor"), { ssr: false })
 
 const NotesComponent: React.FC = () => {
   const [title, setTitle] = useState("")
@@ -22,6 +23,25 @@ const NotesComponent: React.FC = () => {
   const workspaceId = params.workspaceid as string
   const [embeddingsProvider, setEmbeddingsProvider] = useState<string>("")
 
+  // Debounce function to save notes after 2 seconds of inactivity
+  const saveNotes = debounce(async () => {
+    try {
+      localStorage.setItem("markdownContent", markdownContent);
+      console.log("Saving notes:", markdownContent);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (error) {
+      console.error("Failed to save notes:", error);
+    }
+  }, 2000);
+
+  // Effect to trigger autosave whenever markdownContent changes
+  useEffect(() => {
+    saveNotes();
+    // Cancel the debounce on component unmount
+    return () => saveNotes.cancel();
+  }, [markdownContent]);
+
   useEffect(() => {
     ;(async () => {
       const {
@@ -31,7 +51,7 @@ const NotesComponent: React.FC = () => {
         setUserId(user.id)
         try {
           const profile = await getProfileByUserId(user.id)
-          console.log(profile)
+          
           await fetchWorkspaceData(workspaceId)
         } catch (error: any) {
           console.error("Failed to fetch user profile:", error.message)
@@ -90,7 +110,7 @@ const NotesComponent: React.FC = () => {
             />
           </div >
           <div className="bg-secondary">
-          <Editor  onMarkdownChange={handleMarkdownChange} />
+          <Editor onMarkdownChange={handleMarkdownChange} />
           </div>
         </div>
       </div>

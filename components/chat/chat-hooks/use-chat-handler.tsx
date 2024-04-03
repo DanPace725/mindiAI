@@ -9,8 +9,10 @@ import { buildFinalMessages } from "@/lib/build-prompt"
 import { Tables } from "@/supabase/types"
 import { ChatMessage, ChatPayload, LLMID, ModelProvider } from "@/types"
 import { useRouter } from "next/navigation"
-import { useContext, useEffect, useRef } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { LLM_LIST } from "../../../lib/models/llm/llm-list"
+import { saveNotesAsMarkdown } from "@/db/files";
+
 import {
   createTempMessages,
   handleCreateChat,
@@ -413,7 +415,7 @@ export const useChatHandler = () => {
   }
 
   const handleSummarize = async () => {
-  setIsGenerating(true);
+  setIsGenerating(true)
 
   const emptyChatMessage: ChatMessage = {
     message: {
@@ -474,13 +476,22 @@ export const useChatHandler = () => {
       setChatMessages,
       setToolInUse
     );
+      // Save the summary as a markdown file
+    await saveNotesAsMarkdown(
+      "Conversation Summary", // Title of the markdown file
+      summary, // Content of the summary
+      profile!.user_id, // User ID
+      selectedWorkspace!.id, // Workspace ID
+      "openai",
+      
+    );
      // Create a new temporary chat message using createTempMessages
      const newSummaryMessage: ChatMessage = {
       message: {
         id: selectedChat?.user_id || "",
         chat_id: selectedChat?.id || "",
         assistant_id: selectedAssistant?.id || null,
-        user_id: profile?.id || "",
+        user_id: profile?.user_id || "",
         content: summary,
         role: "assistant",
         model: chatSettings?.model || "",

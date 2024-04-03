@@ -23,6 +23,7 @@ import { TextareaAutosize } from "../ui/textarea-autosize"
 import { WithTooltip } from "../ui/with-tooltip"
 import { MessageActions } from "./message-actions"
 import { MessageMarkdown } from "./message-markdown"
+import { saveNotesAsMarkdown } from "@/db/files"
 
 const ICON_SIZE = 32
 
@@ -115,7 +116,7 @@ export const Message: FC<MessageProps> = ({
       true
     )
   }
-  const handleSendSummary = async () => {
+  const handleSummary = async () => {
     setIsGenerating(true);
     await handleSummarize();
   }
@@ -207,7 +208,7 @@ export const Message: FC<MessageProps> = ({
             isEditing={isEditing}
             isHovering={isHovering}
             onRegenerate={handleRegenerate}
-            onSummarize={handleSendSummary}
+            onSummarize={handleSummary}
           />
         </div>
         <div className="space-y-3">

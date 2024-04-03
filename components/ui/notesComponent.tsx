@@ -13,6 +13,8 @@ import { debounce } from "lodash"
 
 const Editor = dynamic(() => import("../utility/editor"), { ssr: false })
 
+
+
 const NotesComponent: React.FC = () => {
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")

@@ -1,5 +1,5 @@
 "use client"
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import { supabase } from "@/lib/supabase/browser-client"
 import { getProfileByUserId } from "@/db/profile"
 import { saveNotesAsMarkdown } from "@/db/files"
@@ -9,8 +9,11 @@ import { getPresetWorkspacesByWorkspaceId } from "@/db/presets"
 import { getPromptWorkspacesByWorkspaceId } from "@/db/prompts"
 import { ChatbotUIContext } from "@/context/context"
 import { useParams } from "next/navigation"
+import { debounce } from "lodash"
 
-const Editor = dynamic(() => import("./editor"), { ssr: false })
+const Editor = dynamic(() => import("../utility/editor"), { ssr: false })
+
+
 
 const NotesComponent: React.FC = () => {
   const [title, setTitle] = useState("")
@@ -21,6 +24,27 @@ const NotesComponent: React.FC = () => {
   const params = useParams()
   const workspaceId = params.workspaceid as string
   const [embeddingsProvider, setEmbeddingsProvider] = useState<string>("")
+  const { files, setFiles } = useContext(ChatbotUIContext);
+
+
+  // Debounce function to save notes after 2 seconds of inactivity
+  const saveNotes = debounce(async () => {
+    try {
+      localStorage.setItem("markdownContent", markdownContent);
+      console.log("Saving notes:", markdownContent);
+      setSaveSuccess(true);
+      setTimeout(() => setSaveSuccess(false), 3000);
+    } catch (error) {
+      console.error("Failed to save notes:", error);
+    }
+  }, 2000);
+
+  // Effect to trigger autosave whenever markdownContent changes
+  useEffect(() => {
+    saveNotes();
+    // Cancel the debounce on component unmount
+    return () => saveNotes.cancel();
+  }, [markdownContent]);
 
   useEffect(() => {
     ;(async () => {
@@ -31,7 +55,7 @@ const NotesComponent: React.FC = () => {
         setUserId(user.id)
         try {
           const profile = await getProfileByUserId(user.id)
-          console.log(profile)
+          
           await fetchWorkspaceData(workspaceId)
         } catch (error: any) {
           console.error("Failed to fetch user profile:", error.message)
@@ -53,15 +77,17 @@ const NotesComponent: React.FC = () => {
   }
 
   const handleSaveNotes = async () => {
+    
     try {
-      await saveNotesAsMarkdown(
+      const savedFile = await saveNotesAsMarkdown(
         title,
         markdownContent,
         userId,
         workspaceId,
         "local" as "openai" | "local"
       );
-      setSaveSuccess(true); // Update state to indicate save success
+      setFiles([...files, savedFile]);
+      setSaveSuccess(true); // Update state to indicate save success    
       setTimeout(() => setSaveSuccess(false), 3000); // Reset the state after 3 seconds
     } catch (error) {
       console.error("Failed to save notes:", error);
@@ -90,23 +116,24 @@ const NotesComponent: React.FC = () => {
             />
           </div >
           <div className="bg-secondary">
-          <Editor  onMarkdownChange={handleMarkdownChange} />
+          <Editor onMarkdownChange={handleMarkdownChange} />
+          <div className="flex justify-center py-2">
+            <button
+              className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground rounded px-4 py-2 font-bold"
+              onClick={handleSaveNotes}
+              >
+              Save
+            </button>
+              {saveSuccess && (
+              <div className="alert alert-success text-foreground bg-accent absolute bottom-0 right-0 m-4 flex justify-center font-bold">Saved</div>
+              )}
+          </div>
+          </div>
           </div>
         </div>
       </div>
-      <div className="flex justify-center py-2">
-        <button
-          className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground rounded px-4 py-2 font-bold"
-          onClick={handleSaveNotes}
-        >
-          Save
-        </button>
-          {saveSuccess && (
-            <div className="alert alert-success mt-4">Notes saved successfully!</div>
-          )}
-      </div>
-    </div>
-  )
+      
+  ) 
 }
 
 export default NotesComponent

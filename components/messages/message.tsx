@@ -80,7 +80,6 @@ export const Message: FC<MessageProps> = ({
 
   const [viewSources, setViewSources] = useState(false)
 
-
   const handleCopy = () => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(message.content)
@@ -117,13 +116,9 @@ export const Message: FC<MessageProps> = ({
     )
   }
   const handleSummary = async () => {
-    setIsGenerating(true);
-    await handleSummarize();
+    setIsGenerating(true)
+    await handleSummarize()
   }
-
-
-
-  
 
   useEffect(() => {
     setEditedMessage(message.content)

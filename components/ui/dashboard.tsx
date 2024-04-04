@@ -138,11 +138,10 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
           )}
         </div>
       </div>
-      
+
       <div className="absolute right-12 top-12">
-        <ToggleSwitch onToggle={handleToggle}/>
+        <ToggleSwitch onToggle={handleToggle} />
       </div>
-      
     </>
   )
 }

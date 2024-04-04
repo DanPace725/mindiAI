@@ -579,7 +579,7 @@ export const SidebarUpdateItem: FC<SidebarUpdateItemProps> = ({
     collections: setCollections,
     assistants: setAssistants,
     tools: setTools,
-    models: setModels,
+    models: setModels
   }
 
   const handleUpdate = async () => {

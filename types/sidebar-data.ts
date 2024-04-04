@@ -6,9 +6,9 @@ export type DataListType =
   | Tables<"presets">[]
   | Tables<"prompts">[]
   | Tables<"files">[]
- | Tables<"assistants">[]
- | Tables<"tools">[]
- | Tables<"models">[]
+  | Tables<"assistants">[]
+  | Tables<"tools">[]
+  | Tables<"models">[]
 
 export type DataItemType =
   | Tables<"collections">
@@ -19,4 +19,3 @@ export type DataItemType =
   | Tables<"assistants">
   | Tables<"tools">
   | Tables<"models">
-

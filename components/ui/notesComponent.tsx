@@ -13,38 +13,35 @@ import { debounce } from "lodash"
 
 const Editor = dynamic(() => import("../utility/editor"), { ssr: false })
 
-
-
 const NotesComponent: React.FC = () => {
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [markdownContent, setMarkdownContent] = useState("")
-  const [saveSuccess, setSaveSuccess] = useState(false);
+  const [saveSuccess, setSaveSuccess] = useState(false)
   const [userId, setUserId] = useState<string>("")
   const params = useParams()
   const workspaceId = params.workspaceid as string
   const [embeddingsProvider, setEmbeddingsProvider] = useState<string>("")
-  const { files, setFiles } = useContext(ChatbotUIContext);
-
+  const { files, setFiles } = useContext(ChatbotUIContext)
 
   // Debounce function to save notes after 2 seconds of inactivity
   const saveNotes = debounce(async () => {
     try {
-      localStorage.setItem("markdownContent", markdownContent);
-      console.log("Saving notes:", markdownContent);
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 3000);
+      localStorage.setItem("markdownContent", markdownContent)
+      console.log("Saving notes:", markdownContent)
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
     } catch (error) {
-      console.error("Failed to save notes:", error);
+      console.error("Failed to save notes:", error)
     }
-  }, 2000);
+  }, 2000)
 
   // Effect to trigger autosave whenever markdownContent changes
   useEffect(() => {
-    saveNotes();
+    saveNotes()
     // Cancel the debounce on component unmount
-    return () => saveNotes.cancel();
-  }, [markdownContent]);
+    return () => saveNotes.cancel()
+  }, [markdownContent])
 
   useEffect(() => {
     ;(async () => {
@@ -55,7 +52,7 @@ const NotesComponent: React.FC = () => {
         setUserId(user.id)
         try {
           const profile = await getProfileByUserId(user.id)
-          
+
           await fetchWorkspaceData(workspaceId)
         } catch (error: any) {
           console.error("Failed to fetch user profile:", error.message)
@@ -77,7 +74,6 @@ const NotesComponent: React.FC = () => {
   }
 
   const handleSaveNotes = async () => {
-    
     try {
       const savedFile = await saveNotesAsMarkdown(
         title,
@@ -85,16 +81,15 @@ const NotesComponent: React.FC = () => {
         userId,
         workspaceId,
         "local" as "openai" | "local"
-      );
-      setFiles([...files, savedFile]);
-      setSaveSuccess(true); // Update state to indicate save success    
-      setTimeout(() => setSaveSuccess(false), 3000); // Reset the state after 3 seconds
+      )
+      setFiles([...files, savedFile])
+      setSaveSuccess(true) // Update state to indicate save success
+      setTimeout(() => setSaveSuccess(false), 3000) // Reset the state after 3 seconds
     } catch (error) {
-      console.error("Failed to save notes:", error);
+      console.error("Failed to save notes:", error)
       // Optionally, handle error notification here
     }
-  };
-  
+  }
 
   const handleMarkdownChange = (markdown: string) => {
     setMarkdownContent(markdown) // Update the markdownContent state with the new markdown
@@ -114,26 +109,27 @@ const NotesComponent: React.FC = () => {
               value={title}
               onChange={e => setTitle(e.target.value)}
             />
-          </div >
+          </div>
           <div className="bg-secondary">
-          <Editor onMarkdownChange={handleMarkdownChange} />
-          <div className="flex justify-center py-2">
-            <button
-              className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground rounded px-4 py-2 font-bold"
-              onClick={handleSaveNotes}
+            <Editor onMarkdownChange={handleMarkdownChange} />
+            <div className="flex justify-center py-2">
+              <button
+                className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground rounded px-4 py-2 font-bold"
+                onClick={handleSaveNotes}
               >
-              Save
-            </button>
+                Save
+              </button>
               {saveSuccess && (
-              <div className="alert alert-success text-foreground bg-accent absolute bottom-0 right-0 m-4 flex justify-center font-bold">Saved</div>
+                <div className="alert alert-success text-foreground bg-accent absolute bottom-0 right-0 m-4 flex justify-center font-bold">
+                  Saved
+                </div>
               )}
-          </div>
-          </div>
+            </div>
           </div>
         </div>
       </div>
-      
-  ) 
+    </div>
+  )
 }
 
 export default NotesComponent

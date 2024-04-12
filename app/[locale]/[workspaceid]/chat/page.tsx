@@ -12,8 +12,6 @@ import useHotkey from "@/lib/hooks/use-hotkey"
 import { useTheme } from "next-themes"
 import { useContext } from "react"
 
-
-
 export default function ChatPage() {
   useHotkey("o", () => handleNewChat())
   useHotkey("l", () => {
@@ -25,10 +23,6 @@ export default function ChatPage() {
   const { handleNewChat, handleFocusChatInput } = useChatHandler()
 
   const { theme } = useTheme()
-
-  
-
-
 
   return (
     <>

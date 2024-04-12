@@ -526,21 +526,21 @@ export const createSummary = async (
   const provider =
     modelData.provider === "openai" && profile.use_azure_openai
       ? "azure"
-      : modelData.provider;
+      : modelData.provider
 
-  const formattedMessages = await buildFinalMessages(payload, profile, []);
+  const formattedMessages = await buildFinalMessages(payload, profile, [])
 
-  const prompt = "Please summarize this conversation:";
-  const messages = [...formattedMessages, { role: "user", content: prompt }];
+  const prompt = "Please summarize this conversation:"
+  const messages = [...formattedMessages, { role: "user", content: prompt }]
 
   const apiEndpoint =
-    provider === "custom" ? "/api/chat/custom" : `/api/chat/${provider}`;
+    provider === "custom" ? "/api/chat/custom" : `/api/chat/${provider}`
 
   const requestBody = {
     chatSettings: payload.chatSettings,
     messages: messages,
-    customModelId: provider === "custom" ? modelData.hostedId : "",
-  };
+    customModelId: provider === "custom" ? modelData.hostedId : ""
+  }
 
   const response = await fetchChatResponse(
     apiEndpoint,
@@ -549,7 +549,7 @@ export const createSummary = async (
     newAbortController,
     setIsGenerating,
     setChatMessages
-  );
+  )
 
   const summary = await processResponse(
     response,
@@ -559,7 +559,7 @@ export const createSummary = async (
     setFirstTokenReceived,
     setChatMessages,
     setToolInUse
-  );
+  )
 
-  return summary;
-};
+  return summary
+}

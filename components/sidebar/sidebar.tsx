@@ -51,12 +51,15 @@ export const Sidebar: FC<SidebarProps> = ({ contentType, showSidebar }) => {
 
   return (
     <TabsContent
-      className="m-0 w-full space-y-2"
+      className="m-0 w-full space-y-2 overflow-auto"
       style={{
         // Sidebar - SidebarSwitcher
         minWidth: showSidebar ? `calc(${SIDEBAR_WIDTH}px - 60px)` : "0px",
         maxWidth: showSidebar ? `calc(${SIDEBAR_WIDTH}px - 60px)` : "0px",
-        width: showSidebar ? `calc(${SIDEBAR_WIDTH}px - 60px)` : "0px"
+        width: showSidebar ? `calc(${SIDEBAR_WIDTH}px - 60px)` : "0px",
+        // Adding responsive styles for mobile devices
+        
+      
       }}
       value={contentType}
     >

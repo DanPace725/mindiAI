@@ -4,7 +4,6 @@ import mammoth from "mammoth"
 import { toast } from "sonner"
 import { uploadFile } from "./storage/files"
 
-
 export const getFileById = async (fileId: string) => {
   const { data: file, error } = await supabase
     .from("files")
@@ -303,10 +302,8 @@ export const saveNotesAsMarkdown = async (
   const markdownContent = `# ${title}\n\n${content}`
   const blob = new Blob([markdownContent], { type: "text/markdown" })
   const file = new File([blob], `${title}.md`, { type: "text/markdown" })
- 
 
-// Update files state
-
+  // Update files state
 
   // Prepare the file record for insertion
   // Inside the saveNotesAsMarkdown function

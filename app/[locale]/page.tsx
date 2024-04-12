@@ -10,9 +10,7 @@ export default function HomePage() {
 
   return (
     <div className="flex size-full flex-col items-center justify-center">
-      <div>
-        
-      </div>
+      <div></div>
 
       <div className="mt-2 text-4xl font-bold">Mindi AI</div>
 

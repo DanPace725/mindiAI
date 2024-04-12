@@ -101,12 +101,13 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
             // Sidebar
             minWidth: showSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
             maxWidth: showSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
-            width: showSidebar ? `${SIDEBAR_WIDTH}px` : "0px"
+            width: showSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
+            
           }}
         >
           {showSidebar && (
             <Tabs
-              className="flex h-full"
+              className="flex h-full overflow-auto"
               value={contentType}
               onValueChange={tabValue => {
                 setContentType(tabValue as ContentType)
@@ -138,11 +139,10 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
           )}
         </div>
       </div>
-      
-      <div className="absolute right-12 top-12">
-        <ToggleSwitch onToggle={handleToggle}/>
+
+      <div className="fixed right-4 top-12 md:right-12 md:top-12">
+        <ToggleSwitch onToggle={handleToggle} />
       </div>
-      
     </>
   )
 }

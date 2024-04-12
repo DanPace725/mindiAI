@@ -41,7 +41,7 @@ export const SidebarDataList: FC<SidebarDataListProps> = ({
     setCollections,
     setAssistants,
     setTools,
-    setModels,
+    setModels
   } = useContext(ChatbotUIContext)
 
   const divRef = useRef<HTMLDivElement>(null)
@@ -55,23 +55,33 @@ export const SidebarDataList: FC<SidebarDataListProps> = ({
   ) => {
     switch (contentType) {
       case "chats":
-        return <ChatItem key={item.id} chat={item as Tables<"chats">} />;
+        return <ChatItem key={item.id} chat={item as Tables<"chats">} />
       case "presets":
-        return <PresetItem key={item.id} preset={item as Tables<"presets">} />;
+        return <PresetItem key={item.id} preset={item as Tables<"presets">} />
       case "prompts":
-        return <PromptItem key={item.id} prompt={item as Tables<"prompts">} />;
+        return <PromptItem key={item.id} prompt={item as Tables<"prompts">} />
       case "files":
-        return <FileItem key={item.id} file={item as Tables<"files">} />;
+        return <FileItem key={item.id} file={item as Tables<"files">} />
       case "collections":
-        return <CollectionItem key={item.id} collection={item as Tables<"collections">} />;
+        return (
+          <CollectionItem
+            key={item.id}
+            collection={item as Tables<"collections">}
+          />
+        )
       case "assistants":
-        return <AssistantItem key={item.id} assistant={item as Tables<"assistants">} />;
+        return (
+          <AssistantItem
+            key={item.id}
+            assistant={item as Tables<"assistants">}
+          />
+        )
       case "tools":
-        return <ToolItem key={item.id} tool={item as Tables<"tools">} />;
+        return <ToolItem key={item.id} tool={item as Tables<"tools">} />
       case "models":
-        return <ModelItem key={item.id} model={item as Tables<"models">} />;
+        return <ModelItem key={item.id} model={item as Tables<"models">} />
       default:
-        return null;
+        return null
     }
   }
 
@@ -133,7 +143,7 @@ export const SidebarDataList: FC<SidebarDataListProps> = ({
     collections: setCollections,
     assistants: setAssistants,
     tools: setTools,
-    models: setModels,
+    models: setModels
   }
 
   const updateFolder = async (itemId: string, folderId: string | null) => {

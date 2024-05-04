@@ -1,22 +1,24 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState } from "react"
 
 interface NotesContextProps {
-  selectedFileContent: string;
-  setSelectedFileContent: React.Dispatch<React.SetStateAction<string>>;
-  selectedFileId: string | null;
-  setSelectedFileId: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedFileContent: string
+  setSelectedFileContent: React.Dispatch<React.SetStateAction<string>>
+  selectedFileId: string | null
+  setSelectedFileId: React.Dispatch<React.SetStateAction<string | null>>
 }
 
 export const NotesContext = createContext<NotesContextProps>({
-  selectedFileContent: '',
+  selectedFileContent: "",
   setSelectedFileContent: () => {},
   selectedFileId: null,
-  setSelectedFileId: () => {},
-});
+  setSelectedFileId: () => {}
+})
 
-export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [selectedFileContent, setSelectedFileContent] = useState('');
-  const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
+export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({
+  children
+}) => {
+  const [selectedFileContent, setSelectedFileContent] = useState("")
+  const [selectedFileId, setSelectedFileId] = useState<string | null>(null)
 
   return (
     <NotesContext.Provider
@@ -24,10 +26,10 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         selectedFileContent,
         setSelectedFileContent,
         selectedFileId,
-        setSelectedFileId,
+        setSelectedFileId
       }}
     >
       {children}
     </NotesContext.Provider>
-  );
-};
+  )
+}

@@ -19,7 +19,6 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
   const [isTyping, setIsTyping] = useState(false)
   const [description, setDescription] = useState(file.description)
   const { setSelectedFileContent, setSelectedFileId } = useContext(NotesContext) // Create a context to share state between components
-  
 
   const handleOpenFile = async () => {
     setSelectedFileId(file.id)
@@ -33,7 +32,6 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
     const link = await getFileFromStorage(file.file_path)
     window.open(link, "_blank")
   }
-  
 
   return (
     <SidebarItem

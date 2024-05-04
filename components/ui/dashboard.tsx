@@ -101,8 +101,7 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
             // Sidebar
             minWidth: showSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
             maxWidth: showSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
-            width: showSidebar ? `${SIDEBAR_WIDTH}px` : "0px",
-            
+            width: showSidebar ? `${SIDEBAR_WIDTH}px` : "0px"
           }}
         >
           {showSidebar && (

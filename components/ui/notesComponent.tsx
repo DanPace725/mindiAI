@@ -24,8 +24,17 @@ export const NotesComponent: React.FC = () => {
   const workspaceId = params.workspaceid as string
   const [embeddingsProvider, setEmbeddingsProvider] = useState<string>("")
   const { files, setFiles } = useContext(ChatbotUIContext)
+<<<<<<< HEAD
   const { selectedFileId, setSelectedFileId } = useContext(NotesContext);
  
+=======
+  const {
+    selectedFileContent,
+    setSelectedFileContent,
+    selectedFileId,
+    setSelectedFileId
+  } = useContext(NotesContext)
+>>>>>>> 339573006258faab681bfa6e830e3997c97b2105
 
  
   // Debounce function to save notes after 2 seconds of inactivity
@@ -81,8 +90,6 @@ export const NotesComponent: React.FC = () => {
     }
   }
 
-  
-
   const handleSaveNotes = async () => {
     try {
       if (selectedFileId) {
@@ -91,28 +98,26 @@ export const NotesComponent: React.FC = () => {
           .from("file_items")
           .update({ content: markdownContent })
           .eq("file_id", selectedFileId)
-      } else {  
-
-      const savedFile = await saveNotesAsMarkdown(
-        title,
-        markdownContent,
-        userId,
-        workspaceId,
-        "local" as "openai" | "local"
-      )
-      setFiles([...files, savedFile])
+      } else {
+        const savedFile = await saveNotesAsMarkdown(
+          title,
+          markdownContent,
+          userId,
+          workspaceId,
+          "local" as "openai" | "local"
+        )
+        setFiles([...files, savedFile])
       }
       setSaveSuccess(true) // Update state to indicate save success
       setTimeout(() => setSaveSuccess(false), 3000) // Reset the state after 3 seconds
     } catch (error) {
       console.error("Failed to save notes:", error)
-      }
+    }
   }
 
   const handleMarkdownChange = (markdown: string) => {
     setMarkdownContent(markdown) // Update the markdownContent state with the new markdown
   }
-
 
   return (
     <div className="dark:bg-secondary dark:text-foreground flex min-h-screen flex-col">

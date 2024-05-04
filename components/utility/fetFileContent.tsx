@@ -11,7 +11,10 @@ export const fetchFileContent = async (fileId: string): Promise<string> => {
       console.error("Error fetching file content:", error)
       return ""
     } else {
-      const fileContent = fileItems.reduce((acc, item) => acc + item.content, "")
+      const fileContent = fileItems.reduce(
+        (acc, item) => acc + item.content,
+        ""
+      )
       return fileContent
     }
   } catch (error) {

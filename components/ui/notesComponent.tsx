@@ -24,14 +24,10 @@ export const NotesComponent: React.FC = () => {
   const workspaceId = params.workspaceid as string
   const [embeddingsProvider, setEmbeddingsProvider] = useState<string>("")
   const { files, setFiles } = useContext(ChatbotUIContext)
-  const { selectedFileContent, setSelectedFileContent, selectedFileId, setSelectedFileId } = useContext(NotesContext);
+  const { selectedFileId, setSelectedFileId } = useContext(NotesContext);
  
 
-  useEffect(() => {
-    if (selectedFileContent) {
-      setMarkdownContent(selectedFileContent)
-    }
-  }, [selectedFileContent])
+ 
   // Debounce function to save notes after 2 seconds of inactivity
   const saveNotes = debounce(async () => {
     try {
@@ -43,13 +39,17 @@ export const NotesComponent: React.FC = () => {
       console.error("Failed to save notes:", error)
     }
   }, 2000)
+  
+  const updateMarkdownContent = (newContent: string) => {
+    setMarkdownContent(newContent)
+  }
 
   // Effect to trigger autosave whenever markdownContent changes
-  useEffect(() => {
-    saveNotes()
+  useEffect(() => {saveNotes()
     // Cancel the debounce on component unmount
-    return () => saveNotes.cancel()
-  }, [markdownContent])
+    return () => saveNotes.cancel()},[markdownContent])
+
+    
 
   useEffect(() => {
     ;(async () => {

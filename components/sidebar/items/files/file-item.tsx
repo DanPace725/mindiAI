@@ -18,14 +18,14 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
   const [name, setName] = useState(file.name)
   const [isTyping, setIsTyping] = useState(false)
   const [description, setDescription] = useState(file.description)
-  const { setSelectedFileContent, setSelectedFileId } = useContext(NotesContext) // Create a context to share state between components
+  const { setSelectedFileContent, setSelectedFileId, setMarkdownContent } = useContext(NotesContext) // Create a context to share state between components
   
 
   const handleOpenFile = async () => {
     setSelectedFileId(file.id)
     const fileContent = await fetchFileContent(file.id)
     if (fileContent) {
-      setSelectedFileContent(fileContent)
+      setMarkdownContent(fileContent)
     }
   }
 

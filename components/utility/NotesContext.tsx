@@ -5,6 +5,8 @@ interface NotesContextProps {
   setSelectedFileContent: React.Dispatch<React.SetStateAction<string>>;
   selectedFileId: string | null;
   setSelectedFileId: React.Dispatch<React.SetStateAction<string | null>>;
+  markdownContent: string;
+  setMarkdownContent: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const NotesContext = createContext<NotesContextProps>({
@@ -12,11 +14,14 @@ export const NotesContext = createContext<NotesContextProps>({
   setSelectedFileContent: () => {},
   selectedFileId: null,
   setSelectedFileId: () => {},
+  markdownContent: '',
+  setMarkdownContent: () => {}
 });
 
 export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [selectedFileContent, setSelectedFileContent] = useState('');
   const [selectedFileId, setSelectedFileId] = useState<string | null>(null);
+  const [markdownContent, setMarkdownContent] = useState('');
 
   return (
     <NotesContext.Provider
@@ -25,6 +30,8 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         setSelectedFileContent,
         selectedFileId,
         setSelectedFileId,
+        markdownContent,
+        setMarkdownContent,
       }}
     >
       {children}

@@ -4,8 +4,11 @@ import { Label } from "@/components/ui/label"
 import { FILE_DESCRIPTION_MAX, FILE_NAME_MAX } from "@/db/limits"
 import { getFileFromStorage } from "@/db/storage/files"
 import { Tables } from "@/supabase/types"
-import { FC, useState } from "react"
+import { FC, useState, useContext } from "react"
 import { SidebarItem } from "../all/sidebar-display-item"
+import { Button } from "@/components/ui/button"
+import { NotesContext } from "@/components/utility/NotesContext"
+import { fetchFileContent } from "@/components/utility/fetFileContent"
 
 interface FileItemProps {
   file: Tables<"files">
@@ -15,6 +18,16 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
   const [name, setName] = useState(file.name)
   const [isTyping, setIsTyping] = useState(false)
   const [description, setDescription] = useState(file.description)
+  const { setSelectedFileContent, setSelectedFileId, setMarkdownContent } = useContext(NotesContext) // Create a context to share state between components
+  
+
+  const handleOpenFile = async () => {
+    setSelectedFileId(file.id)
+    const fileContent = await fetchFileContent(file.id)
+    if (fileContent) {
+      setMarkdownContent(fileContent)
+    }
+  }
 
   const getLinkAndView = async () => {
     const link = await getFileFromStorage(file.file_path)
@@ -65,6 +78,7 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
               onChange={e => setDescription(e.target.value)}
               maxLength={FILE_DESCRIPTION_MAX}
             />
+            <Button onClick={handleOpenFile}>Open</Button>
           </div>
         </>
       )}

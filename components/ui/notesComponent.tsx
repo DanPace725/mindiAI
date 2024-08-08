@@ -10,10 +10,11 @@ import { getPromptWorkspacesByWorkspaceId } from "@/db/prompts"
 import { ChatbotUIContext } from "@/context/context"
 import { useParams } from "next/navigation"
 import { debounce } from "lodash"
+import { NotesContext } from "@/components/utility/NotesContext"
 
 const Editor = dynamic(() => import("../utility/editor"), { ssr: false })
 
-const NotesComponent: React.FC = () => {
+export const NotesComponent: React.FC = () => {
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [markdownContent, setMarkdownContent] = useState("")
@@ -23,7 +24,14 @@ const NotesComponent: React.FC = () => {
   const workspaceId = params.workspaceid as string
   const [embeddingsProvider, setEmbeddingsProvider] = useState<string>("")
   const { files, setFiles } = useContext(ChatbotUIContext)
+  const {
+    selectedFileContent,
+    setSelectedFileContent,
+    selectedFileId,
+    setSelectedFileId
+  } = useContext(NotesContext)
 
+ 
   // Debounce function to save notes after 2 seconds of inactivity
   const saveNotes = debounce(async () => {
     try {
@@ -35,13 +43,17 @@ const NotesComponent: React.FC = () => {
       console.error("Failed to save notes:", error)
     }
   }, 2000)
+  
+  const updateMarkdownContent = (newContent: string) => {
+    setMarkdownContent(newContent)
+  }
 
   // Effect to trigger autosave whenever markdownContent changes
-  useEffect(() => {
-    saveNotes()
+  useEffect(() => {saveNotes()
     // Cancel the debounce on component unmount
-    return () => saveNotes.cancel()
-  }, [markdownContent])
+    return () => saveNotes.cancel()},[markdownContent, saveNotes])
+
+    
 
   useEffect(() => {
     ;(async () => {
@@ -75,19 +87,26 @@ const NotesComponent: React.FC = () => {
 
   const handleSaveNotes = async () => {
     try {
-      const savedFile = await saveNotesAsMarkdown(
-        title,
-        markdownContent,
-        userId,
-        workspaceId,
-        "local" as "openai" | "local"
-      )
-      setFiles([...files, savedFile])
+      if (selectedFileId) {
+        // Update the file content in the database
+        await supabase
+          .from("file_items")
+          .update({ content: markdownContent })
+          .eq("file_id", selectedFileId)
+      } else {
+        const savedFile = await saveNotesAsMarkdown(
+          title,
+          markdownContent,
+          userId,
+          workspaceId,
+          "local" as "openai" | "local"
+        )
+        setFiles([...files, savedFile])
+      }
       setSaveSuccess(true) // Update state to indicate save success
       setTimeout(() => setSaveSuccess(false), 3000) // Reset the state after 3 seconds
     } catch (error) {
       console.error("Failed to save notes:", error)
-      // Optionally, handle error notification here
     }
   }
 

@@ -56,10 +56,8 @@ export const Sidebar: FC<SidebarProps> = ({ contentType, showSidebar }) => {
         // Sidebar - SidebarSwitcher
         minWidth: showSidebar ? `calc(${SIDEBAR_WIDTH}px - 60px)` : "0px",
         maxWidth: showSidebar ? `calc(${SIDEBAR_WIDTH}px - 60px)` : "0px",
-        width: showSidebar ? `calc(${SIDEBAR_WIDTH}px - 60px)` : "0px",
+        width: showSidebar ? `calc(${SIDEBAR_WIDTH}px - 60px)` : "0px"
         // Adding responsive styles for mobile devices
-        
-      
       }}
       value={contentType}
     >

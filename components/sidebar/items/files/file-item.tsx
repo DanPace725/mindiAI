@@ -18,12 +18,8 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
   const [name, setName] = useState(file.name)
   const [isTyping, setIsTyping] = useState(false)
   const [description, setDescription] = useState(file.description)
-<<<<<<< HEAD
   const { setSelectedFileContent, setSelectedFileId, setMarkdownContent } = useContext(NotesContext) // Create a context to share state between components
   
-=======
-  const { setSelectedFileContent, setSelectedFileId } = useContext(NotesContext) // Create a context to share state between components
->>>>>>> 339573006258faab681bfa6e830e3997c97b2105
 
   const handleOpenFile = async () => {
     setSelectedFileId(file.id)

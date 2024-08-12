@@ -2,6 +2,7 @@ import { supabase } from "@/lib/supabase/browser-client"
 
 export const fetchFileContent = async (fileId: string): Promise<string> => {
   try {
+    console.log(`Fetching content for file ID: ${fileId}`)
     const { data: fileItems, error } = await supabase
       .from("file_items")
       .select("content")
@@ -9,16 +10,18 @@ export const fetchFileContent = async (fileId: string): Promise<string> => {
 
     if (error) {
       console.error("Error fetching file content:", error)
-      return ""
-    } else {
-      const fileContent = fileItems.reduce(
-        (acc, item) => acc + item.content,
-        ""
-      )
-      return fileContent
+      throw error
     }
+
+    if (!fileItems || fileItems.length === 0) {
+      console.warn(`No content found for file ID: ${fileId}`)
+      return ""
+    }
+
+    console.log(`Found ${fileItems.length} file item(s) for file ID: ${fileId}`)
+    return fileItems[0].content // Assuming one file item per file
   } catch (error) {
-    console.error("Error fetching file content:", error)
-    return ""
+    console.error("Error in fetchFileContent:", error)
+    throw error
   }
 }

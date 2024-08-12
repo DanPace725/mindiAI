@@ -22,13 +22,21 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
   
 
   const handleOpenFile = async () => {
+    console.log(`Opening file with ID: ${file.id}`)
     setSelectedFileId(file.id)
-    const fileContent = await fetchFileContent(file.id)
-    if (fileContent) {
-      setMarkdownContent(fileContent)
+    try {
+      const fileContent = await fetchFileContent(file.id)
+      console.log(`File content fetched, length: ${fileContent.length}`)
+      if (fileContent) {
+        setMarkdownContent(fileContent)
+        console.log("Markdown content set")
+      } else {
+        console.warn("No file content returned")
+      }
+    } catch (error) {
+      console.error("Error opening file:", error)
     }
   }
-
   const getLinkAndView = async () => {
     const link = await getFileFromStorage(file.file_path)
     window.open(link, "_blank")

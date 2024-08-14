@@ -17,7 +17,6 @@ const Editor = dynamic(() => import("../utility/editor"), { ssr: false })
 export const NotesComponent: React.FC = () => {
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
-  const [markdownContent, setMarkdownContent] = useState("")
   const [saveSuccess, setSaveSuccess] = useState(false)
   const [userId, setUserId] = useState<string>("")
   const params = useParams()
@@ -40,7 +39,7 @@ export const NotesComponent: React.FC = () => {
       localStorage.setItem("markdownContent", markdownContent)
       console.log("Saving notes:", markdownContent)
       setSaveSuccess(true)
-      setTimeout(() => setSaveSuccess(false), 3000)
+      setTimeout(() => setSaveSuccess(false), 5000)
     } catch (error) {
       console.error("Failed to save notes:", error)
     }
@@ -48,7 +47,7 @@ export const NotesComponent: React.FC = () => {
   
   const updateMarkdownContent = (newContent: string) => {
     setMarkdownContent(newContent)
-  }
+  } 
 
   // Effect to trigger autosave whenever markdownContent changes
   useEffect(() => {saveNotes()

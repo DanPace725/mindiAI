@@ -28,7 +28,9 @@ export const NotesComponent: React.FC = () => {
     selectedFileContent,
     setSelectedFileContent,
     selectedFileId,
-    setSelectedFileId
+    setSelectedFileId,
+    markdownContent,
+    setMarkdownContent
   } = useContext(NotesContext)
 
  
@@ -130,7 +132,9 @@ export const NotesComponent: React.FC = () => {
             />
           </div>
           <div className="bg-secondary">
-            <Editor onMarkdownChange={handleMarkdownChange} />
+            <Editor 
+            initialContent={markdownContent}
+            onMarkdownChange={handleMarkdownChange} />
             <div className="flex justify-center py-2">
               <button
                 className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground rounded px-4 py-2 font-bold"

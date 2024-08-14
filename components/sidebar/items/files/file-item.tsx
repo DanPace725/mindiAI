@@ -15,6 +15,7 @@ interface FileItemProps {
 }
 
 export const FileItem: FC<FileItemProps> = ({ file }) => {
+  const router = useRouter()
   const [name, setName] = useState(file.name)
   const [isTyping, setIsTyping] = useState(false)
   const [description, setDescription] = useState(file.description)
@@ -30,6 +31,7 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
       if (fileContent) {
         setMarkdownContent(fileContent)
         console.log("Markdown content set")
+        router.push('/workspace/${selectedWorkspace.id}/notes')
       } else {
         console.warn("No file content returned")
       }

@@ -5,11 +5,18 @@ import "@blocknote/react/style.css"
 
 // Define an interface for the props of the Editor component
 interface EditorProps {
-  onMarkdownChange: (markdown: string) => void
+  initialContent: string;
+  onMarkdownChange: (markdown: string) => void;
 }
 
 export default function Editor({ onMarkdownChange }: EditorProps) {
-  const editor = useCreateBlockNote()
+  const editor = useCreateBlockNote(
+    {
+      initialContent: initialContent 
+        ? [{ type: "paragraph", content: initialContent }] 
+        : undefined,
+    }
+  )
 
   const handleEditorChange = async () => {
     const markdown = await editor.blocksToMarkdownLossy(editor.document)

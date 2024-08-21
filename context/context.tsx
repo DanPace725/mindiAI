@@ -262,4 +262,5 @@ export const ChatbotUIContext = createContext<ChatbotUIContext>({
   setSelectedTools: () => {},
   toolInUse: "none",
   setToolInUse: () => {}
+  
 })

@@ -4,7 +4,8 @@ import {
   IconCheck,
   IconCopy,
   IconEdit,
-  IconRepeat
+  IconRepeat,
+  IconNotes
 } from "@tabler/icons-react"
 import { FC, useContext, useEffect, useState } from "react"
 import { WithTooltip } from "../ui/with-tooltip"
@@ -20,6 +21,7 @@ interface MessageActionsProps {
   onEdit: () => void
   onRegenerate: () => void
   onSummarize: () => void
+  onSaveAsMarkdown: () => void
 }
 
 export const MessageActions: FC<MessageActionsProps> = ({
@@ -30,7 +32,8 @@ export const MessageActions: FC<MessageActionsProps> = ({
   onCopy,
   onEdit,
   onRegenerate,
-  onSummarize
+  onSummarize,
+  onSaveAsMarkdown
 }) => {
   const { isGenerating } = useContext(ChatbotUIContext)
 
@@ -128,12 +131,26 @@ export const MessageActions: FC<MessageActionsProps> = ({
             showCheckmark ? (
               <IconCheck size={MESSAGE_ICON_SIZE} />
             ) : (
-              <IconDeviceFloppy
+              <IconNotes
                 className="cursor-pointer hover:opacity-50"
                 size={MESSAGE_ICON_SIZE}
                 onClick={onSummarize}
               />
             )
+          }
+        />
+      )}
+      {(isHovering || isLast) && (
+        <WithTooltip
+          delayDuration={1000}
+          side="bottom"
+          display={<div>Save Chat as Markdown</div>}
+          trigger={
+            <IconDeviceFloppy
+              className="cursor-pointer hover:opacity-50"
+              size={MESSAGE_ICON_SIZE}
+              onClick={onSaveAsMarkdown}
+            />
           }
         />
       )}

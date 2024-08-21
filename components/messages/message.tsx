@@ -35,6 +35,7 @@ interface MessageProps {
   onStartEdit: (message: Tables<"messages">) => void
   onCancelEdit: () => void
   onSubmitEdit: (value: string, sequenceNumber: number) => void
+  onSaveAsMarkdown: () => void
 }
 
 export const Message: FC<MessageProps> = ({
@@ -44,7 +45,8 @@ export const Message: FC<MessageProps> = ({
   isLast,
   onStartEdit,
   onCancelEdit,
-  onSubmitEdit
+  onSubmitEdit,
+  onSaveAsMarkdown
 }) => {
   const {
     assistants,
@@ -204,6 +206,7 @@ export const Message: FC<MessageProps> = ({
             isHovering={isHovering}
             onRegenerate={handleRegenerate}
             onSummarize={handleSummary}
+            onSaveAsMarkdown={onSaveAsMarkdown}
           />
         </div>
         <div className="space-y-3">

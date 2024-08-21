@@ -9,7 +9,7 @@ interface ChatMessagesProps {}
 export const ChatMessages: FC<ChatMessagesProps> = ({}) => {
   const { chatMessages, chatFileItems } = useContext(ChatbotUIContext)
 
-  const { handleSendEdit } = useChatHandler()
+  const { handleSendEdit, handleSaveChatAsMarkdown } = useChatHandler()
 
   const [editingMessage, setEditingMessage] = useState<Tables<"messages">>()
 
@@ -32,6 +32,7 @@ export const ChatMessages: FC<ChatMessagesProps> = ({}) => {
           onStartEdit={setEditingMessage}
           onCancelEdit={() => setEditingMessage(undefined)}
           onSubmitEdit={handleSendEdit}
+          onSaveAsMarkdown={handleSaveChatAsMarkdown}
         />
       )
     })

@@ -9,7 +9,7 @@ interface EditorProps {
   onMarkdownChange: (markdown: string) => void;
 }
 
-export default function Editor({ onMarkdownChange }: EditorProps) {
+export default function Editor({ initialContent, onMarkdownChange }: EditorProps) {
   const editor = useCreateBlockNote(
     {
       initialContent: initialContent 

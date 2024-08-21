@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation"
 import { useContext, useEffect, useRef, useState } from "react"
 import { LLM_LIST } from "../../../lib/models/llm/llm-list"
 import { saveNotesAsMarkdown } from "@/db/files"
+import { toast } from "sonner"
 
 import {
   createTempMessages,
@@ -476,6 +477,10 @@ export const useChatHandler = () => {
         setChatMessages,
         setToolInUse
       )
+      
+      
+      
+      
       // Save the summary as a markdown file
       await saveNotesAsMarkdown(
         "Conversation Summary", // Title of the markdown file
@@ -515,6 +520,28 @@ export const useChatHandler = () => {
       setIsGenerating(false)
     }
   }
+  const handleSaveChatAsMarkdown = async () => {
+    if (!selectedChat || !profile || !selectedWorkspace) return;
+  
+    const chatContent = chatMessages
+      .map(msg => {
+        const role = msg.message.role === 'assistant' ? 'Assistant' : 'User';
+        return `## ${role}\n\n${msg.message.content}\n\n`;
+      })
+      .join('');
+  
+    const markdown = `# ${selectedChat.name}\n\n${chatContent}`;
+  
+    await saveNotesAsMarkdown(
+      selectedChat.name,
+      markdown,
+      profile.user_id,
+      selectedWorkspace.id,
+      "openai"
+    );
+  
+    toast.success("Chat saved as markdown file");
+  };
 
   return {
     chatInputRef,
@@ -524,6 +551,7 @@ export const useChatHandler = () => {
     handleFocusChatInput,
     handleStopMessage,
     handleSendEdit,
-    handleSummarize
+    handleSummarize,
+    handleSaveChatAsMarkdown,
   }
 }

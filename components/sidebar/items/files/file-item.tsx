@@ -9,6 +9,7 @@ import { SidebarItem } from "../all/sidebar-display-item"
 import { Button } from "@/components/ui/button"
 import { NotesContext } from "@/components/utility/NotesContext"
 import { fetchFileContent } from "@/components/utility/fetFileContent"
+import { useRouter } from "next/navigation"
 
 interface FileItemProps {
   file: Tables<"files">
@@ -31,7 +32,7 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
       if (fileContent) {
         setMarkdownContent(fileContent)
         console.log("Markdown content set")
-        router.push('/workspace/${selectedWorkspace.id}/notes')
+        router.push('/workspace/${file.workspace_id}/notes')
       } else {
         console.warn("No file content returned")
       }

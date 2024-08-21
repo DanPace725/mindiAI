@@ -14,6 +14,7 @@ import { useSelectFileHandler } from "../chat/chat-hooks/use-select-file-handler
 import { CommandK } from "../utility/command-k"
 import NotesComponent from "./notesComponent" // Adjust the import path as necessary
 import { ToggleSwitch } from "@/components/utility/toggle-switch"
+import { ChatbotUIContext } from "@/context/context"
 
 export const SIDEBAR_WIDTH = 350
 
@@ -30,6 +31,7 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
   const tabValue = searchParams.get("tab") || "chats"
 
   const { handleSelectDeviceFile } = useSelectFileHandler()
+  
 
   const [contentType, setContentType] = useState<ContentType>(
     tabValue as ContentType

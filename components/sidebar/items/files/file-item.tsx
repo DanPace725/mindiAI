@@ -9,12 +9,14 @@ import { SidebarItem } from "../all/sidebar-display-item"
 import { Button } from "@/components/ui/button"
 import { NotesContext } from "@/components/utility/NotesContext"
 import { fetchFileContent } from "@/components/utility/fetFileContent"
+import { useRouter } from "next/navigation"
 
 interface FileItemProps {
   file: Tables<"files">
 }
 
 export const FileItem: FC<FileItemProps> = ({ file }) => {
+  const router = useRouter()
   const [name, setName] = useState(file.name)
   const [isTyping, setIsTyping] = useState(false)
   const [description, setDescription] = useState(file.description)
@@ -22,13 +24,22 @@ export const FileItem: FC<FileItemProps> = ({ file }) => {
   
 
   const handleOpenFile = async () => {
+    console.log(`Opening file with ID: ${file.id}`)
     setSelectedFileId(file.id)
-    const fileContent = await fetchFileContent(file.id)
-    if (fileContent) {
-      setMarkdownContent(fileContent)
+    try {
+      const fileContent = await fetchFileContent(file.id)
+      console.log(`File content fetched, length: ${fileContent.length}`)
+      if (fileContent) {
+        setMarkdownContent(fileContent)
+        console.log("Markdown content set")
+        router.push('/workspace/${file.workspace_id}/notes')
+      } else {
+        console.warn("No file content returned")
+      }
+    } catch (error) {
+      console.error("Error opening file:", error)
     }
   }
-
   const getLinkAndView = async () => {
     const link = await getFileFromStorage(file.file_path)
     window.open(link, "_blank")

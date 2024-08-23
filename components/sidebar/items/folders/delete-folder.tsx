@@ -50,7 +50,8 @@ export const DeleteFolder: FC<DeleteFolderProps> = ({
     collections: setCollections,
     assistants: setAssistants,
     tools: setTools,
-    models: setModels
+    models: setModels,
+    notes: null
   }
 
   const handleDeleteFolderOnly = async () => {
@@ -84,7 +85,7 @@ export const DeleteFolder: FC<DeleteFolderProps> = ({
     if (!setStateFunction) return
 
     const { error } = await supabase
-      .from(contentType)
+      .from("folders")
       .delete()
       .eq("folder_id", folder.id)
 

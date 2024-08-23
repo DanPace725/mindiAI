@@ -1,66 +1,60 @@
 "use client"
-import React, { useState, useContext, useEffect } from "react"
+import React, { useState, useContext } from "react"
 import { supabase } from "@/lib/supabase/browser-client"
-import { saveNotesAsMarkdown } from "@/db/files"
 import { ChatbotUIContext } from "@/context/context"
 import { useParams } from "next/navigation"
-import dynamic from "next/dynamic"
-import { getWorkspaceById } from "@/db/workspaces"
-
-const Editor = dynamic(() => import("../utility/editor"), { ssr: false })
+import Editor from "../utility/editor"
+import { saveNotesAsMarkdown } from "@/db/files"
+import { toast } from "sonner"
 
 export const NotesComponent: React.FC = () => {
   const [title, setTitle] = useState("")
   const [content, setContent] = useState("")
   const [saveSuccess, setSaveSuccess] = useState(false)
-  const [userId, setUserId] = useState<string>("")
   const params = useParams()
   const workspaceId = params.workspaceid as string
-  const { files, setFiles, selectedWorkspace, setSelectedWorkspace } = useContext(ChatbotUIContext)
-
-  useEffect(() => {
-    const fetchUserAndWorkspace = async () => {
-      // Get user ID
-      const { data: { user } } = await supabase.auth.getUser()
-      if (user) {
-        setUserId(user.id)
-      }
-
-      // Get selected workspace
-      if (workspaceId) {
-        const workspace = await getWorkspaceById(workspaceId)
-        setSelectedWorkspace(workspace)
-      }
-    }
-
-    fetchUserAndWorkspace()
-  }, [workspaceId, setSelectedWorkspace])
+  const { selectedWorkspace } = useContext(ChatbotUIContext)
 
   const handleContentChange = (newContent: string) => {
     setContent(newContent)
   }
 
   const handleSaveNotes = async () => {
-    if (!userId || !selectedWorkspace) {
-      console.error("User ID or workspace not available")
+    if (!selectedWorkspace) {
+      console.error("Workspace not available")
       return
     }
 
     try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        console.error("User not authenticated")
+        return
+      }
+
+      // Use saveNotesAsMarkdown function
       const savedFile = await saveNotesAsMarkdown(
         title,
         content,
-        userId,
-        selectedWorkspace.id,
-        "local" as "openai" | "local"
+        user.id,
+        workspaceId,
+        "openai" // or "local", depending on your default embedding provider
       )
-      setFiles([...files, savedFile])
-      setSaveSuccess(true)
-      setTimeout(() => setSaveSuccess(false), 3000)
+
+      if (savedFile) {
+        setSaveSuccess(true)
+        setTimeout(() => setSaveSuccess(false), 3000)
+        toast.success("Notes saved successfully")
+      } else {
+        toast.error("Failed to save notes")
+      }
     } catch (error) {
       console.error("Failed to save notes:", error)
+      toast.error("Failed to save notes")
     }
   }
+
+  // ... rest of the component remains the same
 
   return (
     <div className="dark:bg-secondary dark:text-foreground flex min-h-screen flex-col">
@@ -79,8 +73,8 @@ export const NotesComponent: React.FC = () => {
           </div>
           <div className="dark:bg-secondary">
             <Editor 
-              content={content}
-              onContentChange={handleContentChange}
+              initialContent={content}
+              onMarkdownChange={handleContentChange}
             />
             <div className="flex justify-center py-2">
               <button

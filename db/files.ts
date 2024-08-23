@@ -294,67 +294,38 @@ export const deleteFileWorkspace = async (
 // New function to save notes as markdown
 
 
+// New function to save notes as markdown
 export const saveNotesAsMarkdown = async (
   title: string,
   content: string,
   userId: string,
   workspaceId: string,
-  embeddingsProvider: "openai" | "local",
-  fileId?: string
+  embeddingsProvider: "openai" | "local"
 ) => {
   const markdownContent = `# ${title}\n\n${content}`
   const blob = new Blob([markdownContent], { type: "text/markdown" })
   const file = new File([blob], `${title}.md`, { type: "text/markdown" })
 
-  try {
-    if (fileId) {
-      // Update existing file
-      const { data: fileData, error: fileError } = await supabase
-        .from("files")
-        .update({
-          name: `${title}.md`,
-          size: blob.size,
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", fileId)
-        .single()
+  // Update files state
 
-      if (fileError) throw fileError
-
-      const { error: fileItemError } = await supabase
-        .from("file_items")
-        .update({ content: markdownContent })
-        .eq("file_id", fileId)
-
-      if (fileItemError) throw fileItemError
-
-      return fileData
-    } else {
-      // Create new file
-      const fileRecord: TablesInsert<"files"> = {
-        name: `${title}.md`,
-        user_id: userId,
-        description: "Markdown file saved from notes",
-        file_path: "", // This will be updated after the file is uploaded
-        size: blob.size,
-        tokens: 0, // Set this according to your application's logic, if applicable
-        type: "text/markdown"
-      }
-
-      const { data: fileData, error: fileError } = await supabase
-        .from("files")
-        .insert(fileRecord)
-        .single()
-
-      if (fileError) throw fileError
-
-      
-      // Handle file upload and update file_path if necessary
-      // This depends on your specific implementation of file storage
-      return fileData
-    }
-  } catch (error) {
-    console.error("Error saving notes:", error)
-    throw error
+  // Prepare the file record for insertion
+  // Inside the saveNotesAsMarkdown function
+  const fileRecord: TablesInsert<"files"> = {
+    name: `${title}.md`,
+    user_id: userId,
+    description: "Markdown file saved from notes", // Example description
+    file_path: "", // This will be updated after the file is uploaded
+    size: blob.size,
+    tokens: 0, // Set this according to your application's logic, if applicable
+    type: "text/markdown" // MIME type for markdown files
+    // Add any other fields required by your schema
   }
+  // Use the existing function to handle file creation based on extension
+  const savedFile = await createFileBasedOnExtension(
+    file,
+    fileRecord,
+    workspaceId,
+    embeddingsProvider
+  )
+  return savedFile
 }

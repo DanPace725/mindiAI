@@ -38,7 +38,7 @@ export const FilePicker: FC<FilePickerProps> = ({
 
   const filteredFiles = files.filter(
     file =>
-      file.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      file && file.name && file.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
       !selectedFileIds.includes(file.id)
   )
 

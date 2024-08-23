@@ -1,33 +1,27 @@
 "use client"
-import { useEffect } from "react"
 import { BlockNoteView, useCreateBlockNote } from "@blocknote/react"
 import "@blocknote/core/fonts/inter.css"
 import "@blocknote/react/style.css"
 
+// Define an interface for the props of the Editor component
 interface EditorProps {
-  content: string;
-  onContentChange: (content: string) => void;
+  initialContent: string;
+  onMarkdownChange: (markdown: string) => void;
 }
 
-export default function Editor({ content, onContentChange }: EditorProps) {
-  const editor = useCreateBlockNote({
-    initialContent: content
-      ? [{ type: "paragraph", content: content }]
-      : undefined,
-  });
+export default function Editor({ initialContent, onMarkdownChange }: EditorProps) {
+  const editor = useCreateBlockNote(
+    {
+      initialContent: initialContent 
+        ? [{ type: "paragraph", content: initialContent }] 
+        : undefined,
+    }
+  )
 
-  useEffect(() => {
-    const handleEditorChange = async () => {
-      const markdown = await editor.blocksToMarkdownLossy(editor.document);
-      onContentChange(markdown);
-    };
+  const handleEditorChange = async () => {
+    const markdown = await editor.blocksToMarkdownLossy(editor.document)
+    onMarkdownChange(markdown)
+  }
 
-    editor.onEditorContentChange(handleEditorChange);
-
-    return () => {
-      editor.onEditorContentChange(handleEditorChange);
-    };
-  }, [editor, onContentChange]);
-
-  return <BlockNoteView editor={editor} />;
+  return <BlockNoteView editor={editor} onChange={handleEditorChange} />
 }

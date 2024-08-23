@@ -28,6 +28,8 @@ import { Tables, TablesInsert } from "@/supabase/types"
 import { ContentType } from "@/types"
 import { FC, useContext, useRef, useState } from "react"
 import { toast } from "sonner"
+import { CreateNoteButton } from "../files/create-note"
+
 
 interface SidebarCreateItemProps {
   isOpen: boolean
@@ -170,7 +172,9 @@ export const SidebarCreateItem: FC<SidebarCreateItemProps> = ({
       return updatedAssistant
     },
     tools: createTool,
-    models: createModel
+    models: createModel,
+    notes: CreateNoteButton
+    
   }
 
   const stateUpdateFunctions = {
@@ -181,7 +185,8 @@ export const SidebarCreateItem: FC<SidebarCreateItemProps> = ({
     collections: setCollections,
     assistants: setAssistants,
     tools: setTools,
-    models: setModels
+    models: setModels,
+    notes: CreateNoteButton
   }
 
   const handleCreate = async () => {

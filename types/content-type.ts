@@ -7,4 +7,4 @@ export type ContentType =
   | "models"
   | "tools"
   | "presets"
-  | "notes"
+  

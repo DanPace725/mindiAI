@@ -29,6 +29,7 @@ import { ContentType } from "@/types"
 import { FC, useContext, useRef, useState } from "react"
 import { toast } from "sonner"
 
+
 interface SidebarCreateItemProps {
   isOpen: boolean
   isTyping: boolean
@@ -170,7 +171,8 @@ export const SidebarCreateItem: FC<SidebarCreateItemProps> = ({
       return updatedAssistant
     },
     tools: createTool,
-    models: createModel
+    models: createModel,
+    
   }
 
   const stateUpdateFunctions = {

@@ -1,16 +1,11 @@
 "use client"
-import React, { useState, useEffect, useContext } from "react"
+import React, { useState, useContext, useEffect } from "react"
 import { supabase } from "@/lib/supabase/browser-client"
-import { getProfileByUserId } from "@/db/profile"
 import { saveNotesAsMarkdown } from "@/db/files"
-import { getWorkspaceById } from "@/db/workspaces"
-import dynamic from "next/dynamic"
-import { getPresetWorkspacesByWorkspaceId } from "@/db/presets"
-import { getPromptWorkspacesByWorkspaceId } from "@/db/prompts"
 import { ChatbotUIContext } from "@/context/context"
 import { useParams } from "next/navigation"
-import { debounce } from "lodash"
-import { NotesContext } from "@/components/utility/NotesContext"
+import dynamic from "next/dynamic"
+import { getWorkspaceById } from "@/db/workspaces"
 
 const Editor = dynamic(() => import("../utility/editor"), { ssr: false })
 
@@ -21,98 +16,50 @@ export const NotesComponent: React.FC = () => {
   const [userId, setUserId] = useState<string>("")
   const params = useParams()
   const workspaceId = params.workspaceid as string
-  const [embeddingsProvider, setEmbeddingsProvider] = useState<string>("")
-  const { files, setFiles } = useContext(ChatbotUIContext)
-  const {
-    selectedFileContent,
-    setSelectedFileContent,
-    selectedFileId,
-    setSelectedFileId,
-    markdownContent,
-    setMarkdownContent
-  } = useContext(NotesContext)
-
- 
-  // Debounce function to save notes after 2 seconds of inactivity
-  const saveNotes = debounce(async () => {
-    try {
-      localStorage.setItem("markdownContent", markdownContent)
-      console.log("Saving notes:", markdownContent)
-      setSaveSuccess(true)
-      setTimeout(() => setSaveSuccess(false), 5000)
-    } catch (error) {
-      console.error("Failed to save notes:", error)
-    }
-  }, 2000)
-  
-  const updateMarkdownContent = (newContent: string) => {
-    setMarkdownContent(newContent)
-  } 
-
-  // Effect to trigger autosave whenever markdownContent changes
-  useEffect(() => {saveNotes()
-    // Cancel the debounce on component unmount
-    return () => saveNotes.cancel()},[markdownContent, saveNotes])
-
-    
+  const { files, setFiles, selectedWorkspace, setSelectedWorkspace } = useContext(ChatbotUIContext)
 
   useEffect(() => {
-    ;(async () => {
-      const {
-        data: { user }
-      } = await supabase.auth.getUser()
+    const fetchUserAndWorkspace = async () => {
+      // Get user ID
+      const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         setUserId(user.id)
-        try {
-          const profile = await getProfileByUserId(user.id)
-
-          await fetchWorkspaceData(workspaceId)
-        } catch (error: any) {
-          console.error("Failed to fetch user profile:", error.message)
-        }
       }
-    })()
-  }, [])
 
-  const { setSelectedWorkspace } = React.useContext(ChatbotUIContext)
-
-  const fetchWorkspaceData = async (workspaceId: string) => {
-    try {
-      const workspace = await getWorkspaceById(workspaceId)
-      setSelectedWorkspace(workspace)
-      setEmbeddingsProvider(workspace.embeddings_provider)
-    } catch (error: any) {
-      console.error("Failed to fetch workspace data:", error.message)
+      // Get selected workspace
+      if (workspaceId) {
+        const workspace = await getWorkspaceById(workspaceId)
+        setSelectedWorkspace(workspace)
+      }
     }
+
+    fetchUserAndWorkspace()
+  }, [workspaceId, setSelectedWorkspace])
+
+  const handleContentChange = (newContent: string) => {
+    setContent(newContent)
   }
 
   const handleSaveNotes = async () => {
+    if (!userId || !selectedWorkspace) {
+      console.error("User ID or workspace not available")
+      return
+    }
+
     try {
-      if (selectedFileId) {
-        // Update the file content in the database
-        await supabase
-          .from("file_items")
-          .update({ content: markdownContent })
-          .eq("file_id", selectedFileId)
-      } else {
-        const savedFile = await saveNotesAsMarkdown(
-          title,
-          markdownContent,
-          userId,
-          workspaceId,
-          "local" as "openai" | "local"
-        )
-        setFiles([...files, savedFile])
-      }
-      setSaveSuccess(true) // Update state to indicate save success
-      setTimeout(() => setSaveSuccess(false), 3000) // Reset the state after 3 seconds
+      const savedFile = await saveNotesAsMarkdown(
+        title,
+        content,
+        userId,
+        selectedWorkspace.id,
+        "local" as "openai" | "local"
+      )
+      setFiles([...files, savedFile])
+      setSaveSuccess(true)
+      setTimeout(() => setSaveSuccess(false), 3000)
     } catch (error) {
       console.error("Failed to save notes:", error)
     }
-  }
-
-  const handleMarkdownChange = (markdown: string) => {
-    setMarkdownContent(markdown) // Update the markdownContent state with the new markdown
   }
 
   return (
@@ -130,10 +77,11 @@ export const NotesComponent: React.FC = () => {
               onChange={e => setTitle(e.target.value)}
             />
           </div>
-          <div className="bg-secondary">
+          <div className="dark:bg-secondary">
             <Editor 
-            initialContent={markdownContent}
-            onMarkdownChange={handleMarkdownChange} />
+              content={content}
+              onContentChange={handleContentChange}
+            />
             <div className="flex justify-center py-2">
               <button
                 className="bg-primary text-primary-foreground hover:bg-accent hover:text-accent-foreground rounded px-4 py-2 font-bold"

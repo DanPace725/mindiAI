@@ -12,6 +12,7 @@ import { CreateModel } from "./items/models/create-model"
 import { CreatePreset } from "./items/presets/create-preset"
 import { CreatePrompt } from "./items/prompts/create-prompt"
 import { CreateTool } from "./items/tools/create-tool"
+import { CreateNoteButton } from "./items/files/create-note"
 
 interface SidebarCreateButtonsProps {
   contentType: ContentType
@@ -22,6 +23,7 @@ export const SidebarCreateButtons: FC<SidebarCreateButtonsProps> = ({
   contentType,
   hasData
 }) => {
+  
   const { profile, selectedWorkspace, folders, setFolders } =
     useContext(ChatbotUIContext)
   const { handleNewChat } = useChatHandler()
@@ -90,19 +92,28 @@ export const SidebarCreateButtons: FC<SidebarCreateButtonsProps> = ({
           setIsCreatingModel(true)
         }*/
 
+      case "notes":
+        return function CreateNoteWrapper() { return <CreateNoteButton />; }
+        
+
       default:
-        break
+        return undefined
     }
   }
 
+
   return (
     <div className="flex w-full space-x-2">
+      {contentType === "notes" ? (
+        <CreateNoteButton />
+      ) :  (     
+      
       <Button className="flex h-[36px] grow" onClick={getCreateFunction()}>
         <IconPlus className="mr-1" size={20} />
         New{" "}
         {contentType.charAt(0).toUpperCase() +
           contentType.slice(1, contentType.length - 1)}
-      </Button>
+      </Button>)}
 
       {hasData && (
         <Button className="size-[36px] p-1" onClick={handleCreateFolder}>

@@ -27,6 +27,15 @@ module.exports = withBundleAnalyzer(
     },
     experimental: {
       serverComponentsExternalPackages: ["sharp", "onnxruntime-node"]
-    }
+    },
+    async redirects() {
+      return [
+        {
+          source: '/notes',
+          destination: '/notes/new',
+          permanent: true,
+        },
+      ]
+    },
   })
 )

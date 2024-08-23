@@ -15,6 +15,8 @@ import { CommandK } from "../utility/command-k"
 import NotesComponent from "./notesComponent" // Adjust the import path as necessary
 import { ToggleSwitch } from "@/components/utility/toggle-switch"
 import { ChatbotUIContext } from "@/context/context"
+import { useContext } from "react"
+
 
 export const SIDEBAR_WIDTH = 350
 
@@ -27,6 +29,7 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
 
   const pathname = usePathname()
   const router = useRouter()
+  const { selectedWorkspace } = useContext(ChatbotUIContext)
   const searchParams = useSearchParams()
   const tabValue = searchParams.get("tab") || "chats"
 
@@ -76,6 +79,18 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
   const handleToggle = (toggled: boolean) => {
     setShowNotes(toggled)
   }
+  const handleContentTypeChange = (contentType: ContentType) => {
+    if (contentType === "notes") {
+      setShowNotes(true)
+      if (selectedWorkspace) {
+        router.push(`/${selectedWorkspace.id}/notes/new`)
+      } else {
+        console.error("No workspace selected")
+      }
+    } else {
+      setShowNotes(false)
+    }
+  }
 
   return (
     <>
@@ -115,7 +130,7 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
                 router.replace(`${pathname}?tab=${tabValue}`)
               }}
             >
-              <SidebarSwitcher onContentTypeChange={setContentType} />
+              <SidebarSwitcher onContentTypeChange={handleContentTypeChange} />
 
               <Sidebar contentType={contentType} showSidebar={showSidebar} />
             </Tabs>

@@ -21,6 +21,8 @@ import { deleteTool } from "@/db/tools"
 import { Tables } from "@/supabase/types"
 import { ContentType, DataItemType } from "@/types"
 import { FC, useContext, useRef, useState } from "react"
+import { CreateNoteButton } from "../files/create-note"
+import NoteEditor from "@/components/ui/tip-editor"
 
 interface SidebarDeleteItemProps {
   item: DataItemType
@@ -74,7 +76,8 @@ export const SidebarDeleteItem: FC<SidebarDeleteItemProps> = ({
     },
     models: async (model: Tables<"models">) => {
       await deleteModel(model.id)
-    }
+    },
+    notes: CreateNoteButton
   }
 
   const stateUpdateFunctions = {
@@ -85,7 +88,8 @@ export const SidebarDeleteItem: FC<SidebarDeleteItemProps> = ({
     collections: setCollections,
     assistants: setAssistants,
     tools: setTools,
-    models: setModels
+    models: setModels,
+    notes: CreateNoteButton
   }
 
   const handleDelete = async () => {

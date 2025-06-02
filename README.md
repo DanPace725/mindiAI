@@ -7,7 +7,12 @@ Mindi is an AI-driven app that blends conversational interaction with sophistica
 
 ## Features
 - Real-time chat with AI integration
-- Built-in note-taking functionality that saves to database, allowing for seamless integration with chat sessions. 
+- **Enhanced Note-Taking:** Mindi now features a dedicated and robust note-taking system integrated directly within your workspace.
+    - **Accessing Notes:** Navigate to the "Notes" area within a workspace (typically found at a URL like `/[your-workspace-id]/notes`) to manage all your notes for that context.
+    - **Listing Notes:** All existing notes for the current workspace are conveniently listed, showing titles and last updated timestamps.
+    - **Creating New Notes:** A "Create New Note" button on the notes list page allows you to start a fresh note. The editor opens, ready for your input.
+    - **Editing Notes:** Simply click on any note from the list to open it in the editor. You can modify its title and content as needed.
+    - **Saving Notes:** Notes (including title and content) are saved directly to the database as distinct entries, ensuring your information is securely stored and readily accessible. This replaces the previous method of saving notes as Markdown files.
 - Automatic conversion of conversations into organized notes (Coming Soon)
 - Local and cloud storage options for notes (Coming Soon)
 - Advanced search and recall functionalities (Coming Soon)

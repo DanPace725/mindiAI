@@ -13,6 +13,13 @@ Mindi is an AI-driven app that blends conversational interaction with sophistica
 - Advanced search and recall functionalities (Coming Soon)
 - Over time, Mindi will dynamically summarize conversations and save the information to a graph database, allowing it to remember important details from past conversations. (Coming Soon)
 
+## Accessibility and UX Improvements
+Recent updates have focused on enhancing the user experience and accessibility of Mindi:
+- **Scrollbar Styling:** Upgraded scrollbar appearance for better visual integration and usability across both light and dark themes. This includes improved contrast and larger click/drag targets for easier interaction.
+- **Focus Visibility:** Ensured that all interactive elements, especially form inputs, now feature clear and highly visible focus indicators. This significantly improves keyboard navigation and accessibility for all users.
+- **Dialog Close Button:** Implemented a consistently visible close button ("X") on all dialog components, enhancing ease of use and ensuring accessible dismissal of modal windows.
+- **Color Contrast:** Conducted a comprehensive color contrast audit across the application. Theme colors in both light and dark modes have been adjusted to meet WCAG AA accessibility standards, ensuring text is readable and UI elements are clearly distinguishable.
+
 ## Getting Started
 Mindi is currently deployed on Vercel at [Link](https://mindi-ai.vercel.app/)
 For detailed information on running your own version see the indepth instructions for Chatbot UI [Here](https://github.com/mckaywrigley/chatbot-ui/blob/main/README.md)

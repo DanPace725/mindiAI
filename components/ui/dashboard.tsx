@@ -9,13 +9,13 @@ import { cn } from "@/lib/utils"
 import { ContentType } from "@/types"
 import { IconChevronCompactRight } from "@tabler/icons-react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { FC, useState } from "react"
+import { FC, useState, useContext } from "react" // Added useContext here
 import { useSelectFileHandler } from "../chat/chat-hooks/use-select-file-handler"
 import { CommandK } from "../utility/command-k"
-import NotesComponent from "./notesComponent" // Adjust the import path as necessary
+import NotesComponent from "@/components/ui/notesComponent" // Corrected import path
 import { ToggleSwitch } from "@/components/utility/toggle-switch"
 import { ChatbotUIContext } from "@/context/context"
-import { useContext } from "react"
+// Removed duplicate useContext import, it's now combined above
 
 
 export const SIDEBAR_WIDTH = 350
@@ -149,7 +149,18 @@ export const Dashboard: FC<DashboardProps> = ({ children }) => {
               drop file here
             </div>
           ) : showNotes ? (
-            <NotesComponent />
+            selectedWorkspace && selectedWorkspace.id ? (
+              <NotesComponent
+                workspaceId={selectedWorkspace.id}
+                noteId={null} // For creating a new note in dashboard context
+              />
+            ) : (
+              <div className="flex h-full items-center justify-center">
+                <p className="text-muted-foreground">
+                  Please select a workspace to create a note.
+                </p>
+              </div>
+            )
           ) : (
             children
           )}
